@@ -1,12 +1,9 @@
 package de.ait.todo.config;
 
-import de.ait.todo.dto.StandardResponseDto;
-import io.swagger.v3.core.converter.AnnotatedType;
-import io.swagger.v3.core.converter.ModelConverters;
-import io.swagger.v3.core.converter.ResolvedSchema;
-import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.headers.Header;
-import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
@@ -15,38 +12,19 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
 
-@Configuration
-public class OpenApiConfig {
-
-    @Bean
-    public OpenAPI openApi() {
-        ResolvedSchema resolvedSchema = ModelConverters.getInstance()
-                .resolveAsResolvedSchema(
-                        new AnnotatedType(StandardResponseDto.class).resolveAsRef(false));
-
-        return new OpenAPI()
-                .components(new Components()
-                        .addSchemas("EmailAndPassword", emailAndPassword())
-                        .addSecuritySchemes("cookieAuth", securityScheme())
-                        .addSchemas("StandardResponseDto", resolvedSchema.schema.description("StandardResponseDto")))
-                .addSecurityItem(buildSecurity())
-                .paths(buildAuthenticationPath())
-                .info(new Info().title("Todo Service API").version("0.1"));
-    }
-
+/**
+ * 6/17/2023
+ * backend-demo
+ *
+ * @author Marsel Sidikov (AIT TR)
+ */
+public class OpenApiDocumentation {
     static Paths buildAuthenticationPath() {
         return new Paths()
                 .addPathItem("/login", buildAuthenticationPathItem())
-                .addPathItem("/logout", buildLogoutPathItem());
-    }
-
-    static Paths buildLogoutPath() {
-        return new Paths()
                 .addPathItem("/logout", buildLogoutPathItem());
     }
 
