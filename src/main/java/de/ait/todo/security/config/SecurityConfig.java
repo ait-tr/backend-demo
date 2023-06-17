@@ -12,12 +12,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 6/11/2023
@@ -54,7 +59,10 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor((request, response, authException) ->
                                 fillResponse(response, 403, "Пользователь не аутентифицирован"),
-                        new AntPathRequestMatcher("/api/**"));
+                        new AntPathRequestMatcher("/api/**"))
+                .and()
+                .logout().logoutSuccessHandler((request, response, authentication) ->
+                        fillResponse(response, 200, "Выход выполнен успешно"));
         return httpSecurity.build();
     }
 
@@ -68,13 +76,13 @@ public class SecurityConfig {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        StandardResponseDto standartReponseDto = StandardResponseDto.builder()
+        StandardResponseDto standardResponseDto = StandardResponseDto.builder()
                 .message(message)
                 .status(statusCode)
                 .build();
 
         try {
-            response.getWriter().write(objectMapper.writeValueAsString(standartReponseDto));
+            response.getWriter().write(objectMapper.writeValueAsString(standardResponseDto));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
