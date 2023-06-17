@@ -36,6 +36,7 @@ public class TasksController implements TasksApi {
         return ResponseEntity.ok(tasksService.getById(taskId));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
     public void deleteTask(Long taskId) {
         tasksService.deleteTask(taskId);
