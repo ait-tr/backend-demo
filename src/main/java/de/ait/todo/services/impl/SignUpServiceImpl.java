@@ -27,7 +27,7 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public UserDto signUp(NewUserDto newUser) {
         User user = User.builder()
-                .email(newUser.getUsername())
+                .email(newUser.getEmail())
                 .hashPassword(passwordEncoder.encode(newUser.getPassword()))
                 .role(User.Role.USER)
                 .build();

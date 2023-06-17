@@ -25,14 +25,11 @@ public class UserDto {
     @Schema(description = "идентификатор пользователя", example = "1")
     private Long id;
     @Schema(description = "имя пользователя", example = "username")
-    private String username;
-    @Schema(description = "дата создания пользователя", example = "")
-    private String createdDateTime;
-
+    private String email;
     public static UserDto from(User user) {
         return UserDto.builder()
                 .id(user.getId())
-                .username(user.getEmail())
+                .email(user.getEmail())
                 .build();
     }
 
