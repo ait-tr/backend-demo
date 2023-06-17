@@ -1,6 +1,7 @@
 package de.ait.todo.controllers;
 
 import de.ait.todo.controllers.api.TasksApi;
+import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.TasksService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Marsel Sidikov (AIT TR)
  */
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class TasksController implements TasksApi {
@@ -25,8 +25,24 @@ public class TasksController implements TasksApi {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity<TasksPage> getAll(int page, AuthenticatedUser currentUser) {
+    public ResponseEntity<TasksPage> getAll() {
         return ResponseEntity
-                .ok(tasksService.getAll(page));
+                .ok(tasksService.getAll());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public ResponseEntity<TaskDto> getById(Long taskId) {
+        return ResponseEntity.ok(tasksService.getById(taskId));
+    }
+
+    @Override
+    public ResponseEntity<TaskDto> updateTask(Long taskId, TaskDto task) {
+        return null;
+    }
+
+    @Override
+    public void deleteTask(Long taskId) {
+        tasksService.deleteTask(taskId);
     }
 }

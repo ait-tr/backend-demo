@@ -1,5 +1,9 @@
 package de.ait.todo.config;
 
+import de.ait.todo.dto.StandardResponseDto;
+import io.swagger.v3.core.converter.AnnotatedType;
+import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.core.converter.ResolvedSchema;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.info.Info;
@@ -15,27 +19,44 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class OpenApiConfig {
 
     @Bean
     public OpenAPI openApi() {
+        ResolvedSchema resolvedSchema = ModelConverters.getInstance()
+                .resolveAsResolvedSchema(
+                        new AnnotatedType(StandardResponseDto.class).resolveAsRef(false));
+
         return new OpenAPI()
-                .addSecurityItem(buildSecurity())
-                .paths(buildAuthenticationPath())
                 .components(new Components()
                         .addSchemas("EmailAndPassword", emailAndPassword())
-                        .addSecuritySchemes("cookieAuth", securityScheme()))
+                        .addSecuritySchemes("cookieAuth", securityScheme())
+                        .addSchemas("StandardResponseDto", resolvedSchema.schema.description("StandardResponseDto")))
+                .addSecurityItem(buildSecurity())
+                .paths(buildAuthenticationPath())
                 .info(new Info().title("Todo Service API").version("0.1"));
     }
+
     static Paths buildAuthenticationPath() {
         return new Paths()
-                .addPathItem("/login", buildAuthenticationPathItem());
+                .addPathItem("/login", buildAuthenticationPathItem())
+                .addPathItem("/logout", buildLogoutPathItem());
     }
 
+    static Paths buildLogoutPath() {
+        return new Paths()
+                .addPathItem("/logout", buildLogoutPathItem());
+    }
+
+    private static PathItem buildLogoutPathItem() {
+        return new PathItem().get(
+                new Operation()
+                        .addTagsItem("Authentication")
+                        .responses(new ApiResponses()
+                                .addApiResponse("200", new ApiResponse().description("Успешный выход"))));
+    }
     private static PathItem buildAuthenticationPathItem() {
         return new PathItem().post(
                 new Operation()
@@ -45,6 +66,8 @@ public class OpenApiConfig {
                                 .addApiResponse("200",
                                         new ApiResponse()
                                                 .description("Успешная аутентификация")
+                                                .content(new Content().addMediaType("application/json",
+                                                        new MediaType().schema(new Schema<>().$ref("StandardResponseDto"))))
                                                 .headers(
                                                         Collections
                                                                 .singletonMap("Set-Cookie",
@@ -53,7 +76,11 @@ public class OpenApiConfig {
                                                                                 .description("Идентификатор сессии"))))
                                 .addApiResponse("401",
                                         new ApiResponse()
-                                                .description("Неверный логин или пароль"))));
+                                                .description("Неверный логин или пароль")
+                                                .content(new Content()
+                                                        .addMediaType("application/json",
+                                                                new MediaType()
+                                                                        .schema(new Schema<>().$ref("StandardResponseDto")))))));
     }
 
     static RequestBody buildAuthenticationRequestBody() {
@@ -64,6 +91,7 @@ public class OpenApiConfig {
                                         .schema(new Schema<>()
                                                 .$ref("EmailAndPassword"))));
     }
+
     static SecurityRequirement buildSecurity() {
         return new SecurityRequirement().addList("CookieAuthentication");
     }

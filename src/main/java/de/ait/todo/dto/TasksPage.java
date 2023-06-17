@@ -18,12 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "Страница с задачами и общее количество страниц")
+@Schema(description = "Страница с задачами")
 public class TasksPage {
 
     @Schema(description = "Список задач")
     private List<TaskDto> tasks;
-
-    @Schema(description = "Количество доступных страниц", example = "5")
-    private Integer totalPages;
 }

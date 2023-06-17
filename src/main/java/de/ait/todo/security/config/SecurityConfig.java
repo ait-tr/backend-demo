@@ -1,10 +1,13 @@
 package de.ait.todo.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.ait.todo.dto.StandardResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,8 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 6/11/2023
@@ -31,6 +35,8 @@ public class SecurityConfig {
 
     PasswordEncoder passwordEncoder;
 
+    ObjectMapper objectMapper;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
@@ -39,18 +45,39 @@ public class SecurityConfig {
                 .antMatchers("/swagger-ui.html/**").permitAll()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/swagger-ui/index.html")
-                .failureHandler((request, response, exception) -> response.sendError(401))
+                .successHandler((request, response, authentication) -> {
+                    fillResponse(response, 200, "Успешная авторизация");
+                })
+                .failureHandler((request, response, exception) ->
+                        fillResponse(response, 401, "Неверный логин или пароль"))
                 .and()
                 .exceptionHandling()
-                .defaultAuthenticationEntryPointFor(new Http403ForbiddenEntryPoint()
-                        , new AntPathRequestMatcher("/api/**"));
+                .defaultAuthenticationEntryPointFor((request, response, authException) ->
+                                fillResponse(response, 403, "Пользователь не аутентифицирован"),
+                        new AntPathRequestMatcher("/api/**"));
         return httpSecurity.build();
     }
 
     @Autowired
     public void bindUserDetailsServiceAndPasswordEncoder(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder);
+    }
+
+    private void fillResponse(HttpServletResponse response, int statusCode, String message) {
+        response.setStatus(statusCode);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        StandardResponseDto standartReponseDto = StandardResponseDto.builder()
+                .message(message)
+                .status(statusCode)
+                .build();
+
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(standartReponseDto));
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 }

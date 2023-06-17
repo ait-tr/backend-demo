@@ -1,6 +1,8 @@
 package de.ait.todo.services.impl;
 
+import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
+import de.ait.todo.exceptions.NotFoundException;
 import de.ait.todo.models.Task;
 import de.ait.todo.repositories.TasksRepository;
 import de.ait.todo.services.TasksService;
@@ -24,18 +26,27 @@ public class TasksServiceImpl implements TasksService {
 
     private final TasksRepository tasksRepository;
 
-    @Value("${app.default-page-size}")
-    private int defaultPageSize;
+    @Override
+    public TasksPage getAll() {
+        return TasksPage.builder()
+                .tasks(from(tasksRepository.findAll()))
+                .build();
+    }
 
     @Override
-    public TasksPage getAll(int page) {
-        PageRequest pageRequest = PageRequest.of(page, defaultPageSize);
+    public TaskDto getById(Long taskId) {
+        Task task = tasksRepository.findById(taskId).orElseThrow(
+                () -> new NotFoundException("Задача <" + taskId + "> не найдена"));
 
-        Page<Task> tasksPage = tasksRepository.findAll(pageRequest);
+        return from(task);
+    }
 
-        return TasksPage.builder()
-                .tasks(from(tasksPage.getContent()))
-                .totalPages(tasksPage.getTotalPages())
-                .build();
+    @Override
+    public void deleteTask(Long taskId) {
+        if (tasksRepository.existsById(taskId)) {
+            tasksRepository.deleteById(taskId);
+        } else {
+            throw new NotFoundException("Задача <" + taskId + "> не найдена");
+        }
     }
 }
