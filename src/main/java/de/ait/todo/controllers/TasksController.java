@@ -41,4 +41,12 @@ public class TasksController implements TasksApi {
     public void deleteTask(Long taskId) {
         tasksService.deleteTask(taskId);
     }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Override
+    public ResponseEntity<TaskDto> addTask(AuthenticatedUser authenticatedUser, TaskDto task) {
+        Long currentUserId = authenticatedUser.getUser().getId();
+        return ResponseEntity.status(201)
+                .body(tasksService.addTask(currentUserId, task));
+    }
 }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Schema(description = "Задача")
 public class TaskDto {
 
-    @Schema(description = "идентификатор задачи", example = "1")
+    @Schema(description = "идентификатор задачи, не указывается при добавлении", example = "1")
     private Long id;
 
     @Schema(description = "Название задачи", example = "Task")

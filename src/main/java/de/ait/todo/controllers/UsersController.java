@@ -2,6 +2,7 @@ package de.ait.todo.controllers;
 
 import de.ait.todo.controllers.api.UsersApi;
 import de.ait.todo.dto.ProfileDto;
+import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,12 @@ public class UsersController implements UsersApi {
         ProfileDto profile = usersService.getProfile(currentUserId);
 
         return ResponseEntity.ok(profile);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @Override
+    public ResponseEntity<TasksPage> getMyTasks(AuthenticatedUser currentUser) {
+        Long currentUserId = currentUser.getUser().getId();
+        return ResponseEntity.ok(usersService.getTasksByUser(currentUserId));
     }
 }

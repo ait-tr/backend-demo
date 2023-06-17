@@ -24,6 +24,8 @@ public class InitialDataRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
+        User alisher = null;
+
         if (!usersRepository.existsById(1L)) {
             User admin = User.builder()
                     .email("admin@ait-tr.de")
@@ -31,15 +33,21 @@ public class InitialDataRunner implements CommandLineRunner {
                     .hashPassword("$2a$10$YijmlwvWMcfIhT2qQOQ7EeRuMiByNjPtKXa78J7Y8z7XZWJJQTDa.") // admin
                     .build();
 
+            alisher = User.builder()
+                    .email("alisher@ait-tr.de")
+                    .role(User.Role.USER)
+                    .hashPassword("$2a$10$RVSHTssubxIkoAl3rQ58UedU8sPMM6FZRxg1icrJg07f.MQAMRpDy") // alisher
+                    .build();
             usersRepository.save(admin);
+            usersRepository.save(alisher);
         }
 
         if (tasksRepository.count() == 0) {
             tasksRepository.saveAll(Arrays.asList(
-                    Task.builder().name("Name 1").description("Description 1").build(),
-                    Task.builder().name("Name 1").description("Description 1").build(),
-                    Task.builder().name("Name 1").description("Description 1").build(),
-                    Task.builder().name("Name 1").description("Description 1").build()
+                    Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
+                    Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
+                    Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
+                    Task.builder().name("Name 1").description("Description 1").user(alisher).build()
             ));
         }
 

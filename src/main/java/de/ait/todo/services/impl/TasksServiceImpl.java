@@ -4,7 +4,10 @@ import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
 import de.ait.todo.exceptions.NotFoundException;
 import de.ait.todo.models.Task;
+import de.ait.todo.models.User;
 import de.ait.todo.repositories.TasksRepository;
+import de.ait.todo.repositories.UsersRepository;
+import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +28,8 @@ import static de.ait.todo.dto.TaskDto.from;
 public class TasksServiceImpl implements TasksService {
 
     private final TasksRepository tasksRepository;
+
+    private final UsersRepository usersRepository;
 
     @Override
     public TasksPage getAll() {
@@ -48,5 +53,21 @@ public class TasksServiceImpl implements TasksService {
         } else {
             throw new NotFoundException("Задача <" + taskId + "> не найдена");
         }
+    }
+
+    @Override
+    public TaskDto addTask(Long currentUserId, TaskDto task) {
+        User user = usersRepository.findById(currentUserId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Task newTask = Task.builder()
+                .name(task.getName())
+                .description(task.getDescription())
+                .user(user)
+                .build();
+
+        tasksRepository.save(newTask);
+
+        return from(newTask);
     }
 }

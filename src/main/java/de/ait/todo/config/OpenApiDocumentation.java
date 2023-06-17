@@ -29,7 +29,7 @@ public class OpenApiDocumentation {
     }
 
     private static PathItem buildLogoutPathItem() {
-        return new PathItem().get(
+        return new PathItem().post(
                 new Operation()
                         .addTagsItem("Authentication")
                         .responses(new ApiResponses()
