@@ -1,6 +1,5 @@
 package de.ait.todo.controllers.api;
 
-import de.ait.todo.dto.StandardResponseDto;
 import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;

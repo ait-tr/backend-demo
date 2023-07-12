@@ -22,7 +22,6 @@ public class UsersController implements UsersApi {
 
     private final UsersService usersService;
 
-
     @PreAuthorize("isAuthenticated()")
     @Override
     public ResponseEntity<ProfileDto> getProfile(AuthenticatedUser currentUser) {

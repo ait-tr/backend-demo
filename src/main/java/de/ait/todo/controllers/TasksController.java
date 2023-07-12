@@ -6,7 +6,6 @@ import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.TasksService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;

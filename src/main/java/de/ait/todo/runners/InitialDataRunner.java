@@ -45,9 +45,9 @@ public class InitialDataRunner implements CommandLineRunner {
         if (tasksRepository.count() == 0) {
             tasksRepository.saveAll(Arrays.asList(
                     Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
-                    Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
-                    Task.builder().name("Name 1").description("Description 1").user(alisher).build(),
-                    Task.builder().name("Name 1").description("Description 1").user(alisher).build()
+                    Task.builder().name("Name 2").description("Description 2").user(alisher).build(),
+                    Task.builder().name("Name 3").description("Description 3").user(alisher).build(),
+                    Task.builder().name("Name 4").description("Description 4").user(alisher).build()
             ));
         }
 
