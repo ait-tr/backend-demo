@@ -16,21 +16,21 @@ import javax.sql.DataSource;
  */
 @Profile("prod")
 @Configuration
-public class DataSourceConfiguration {
+public class DigitalOceanDataSourceConfiguration {
 
-    @Value("${db.USERNAME}")
+    @Value("${todo.USERNAME}")
     private String username;
 
-    @Value("${db.PASSWORD}")
+    @Value("${todo.PASSWORD}")
     private String password;
 
-    @Value("${db.HOSTNAME}")
+    @Value("${todo.HOSTNAME}")
     private String hostname;
 
-    @Value("${db.PORT}")
+    @Value("${todo.PORT}")
     private String port;
 
-    @Value("${db.DATABASE}")
+    @Value("${todo.DATABASE}")
     private String database;
 
     @Bean
