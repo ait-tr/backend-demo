@@ -18,19 +18,19 @@ import javax.sql.DataSource;
 @Configuration
 public class DigitalOceanDataSourceConfiguration {
 
-    @Value("${DB_USERNAME}")
+    @Value("${DATABASE_USERNAME}")
     private String username;
 
-    @Value("${DB_PASSWORD}")
+    @Value("${DATABASE_PASSWORD}")
     private String password;
 
-    @Value("${DB_HOSTNAME}")
+    @Value("${DATABASE_HOSTNAME}")
     private String hostname;
 
-    @Value("${DB_PORT}")
+    @Value("${DATABASE_PORT}")
     private String port;
 
-    @Value("${DB_DATABASE}")
+    @Value("${DATABASE_DATABASE}")
     private String database;
 
     @Bean
