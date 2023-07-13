@@ -24,13 +24,13 @@ public class DigitalOceanDataSourceConfiguration {
     @Value("${DATABASE_PASSWORD}")
     private String password;
 
-    @Value("${DATABASE_HOSTNAME}")
+    @Value("${DATABASE_HOST}")
     private String hostname;
 
     @Value("${DATABASE_PORT}")
     private String port;
 
-    @Value("${DATABASE_DATABASE}")
+    @Value("${DATABASE_NAME}")
     private String database;
 
     @Bean
@@ -41,7 +41,6 @@ public class DigitalOceanDataSourceConfiguration {
                 .username(username)
                 .password(password)
                 .build();
-
     }
 
 }
