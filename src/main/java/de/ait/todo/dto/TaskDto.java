@@ -32,8 +32,6 @@ public class TaskDto {
     @Schema(description = "Описание задачи", example = "Description of Task ")
     private String description;
 
-    private String demoField = "For demonstration";
-
     public static TaskDto from(Task task) {
         return TaskDto.builder()
                 .id(task.getId())

@@ -2,6 +2,7 @@ package de.ait.todo.controllers.api;
 
 import de.ait.todo.dto.NewUserDto;
 import de.ait.todo.dto.UserDto;
+import de.ait.todo.validation.dto.ValidationErrorsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
 
 /**
  * 6/12/2023
@@ -33,8 +36,13 @@ public interface SignUpApi {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = UserDto.class))
                     }
-            )
+            ),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationErrorsDto.class))
+                    })
     })
+
     @PostMapping
-    ResponseEntity<UserDto> signUp(@RequestBody NewUserDto newUser);
+    ResponseEntity<UserDto> signUp(@RequestBody @Valid NewUserDto newUser);
 }

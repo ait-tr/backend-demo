@@ -20,6 +20,4 @@ import lombok.NoArgsConstructor;
 public class StandardResponseDto {
     @Schema(description = "Текст сообщения")
     private String message;
-    @Schema(description = "HTTP-статус")
-    private int status;
 }

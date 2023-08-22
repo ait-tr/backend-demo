@@ -1,6 +1,7 @@
 package de.ait.todo.controllers;
 
 import de.ait.todo.controllers.api.TasksApi;
+import de.ait.todo.dto.NewTaskDto;
 import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;
@@ -43,7 +44,7 @@ public class TasksController implements TasksApi {
 
     @PreAuthorize("hasAuthority('USER')")
     @Override
-    public ResponseEntity<TaskDto> addTask(AuthenticatedUser authenticatedUser, TaskDto task) {
+    public ResponseEntity<TaskDto> addTask(AuthenticatedUser authenticatedUser, NewTaskDto task) {
         Long currentUserId = authenticatedUser.getUser().getId();
         return ResponseEntity.status(201)
                 .body(tasksService.addTask(currentUserId, task));

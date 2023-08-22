@@ -1,8 +1,10 @@
 package de.ait.todo.controllers.api;
 
+import de.ait.todo.dto.NewTaskDto;
 import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
 import de.ait.todo.security.details.AuthenticatedUser;
+import de.ait.todo.validation.dto.ValidationErrorsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * 6/11/2023
@@ -39,6 +43,18 @@ public interface TasksApi {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = TasksPage.class))
                     }
+            ),
+            @ApiResponse(responseCode = "401", description = "Пользователь не авторизован",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "403", description = "Запрещено",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
             )
     })
     @GetMapping
@@ -53,6 +69,18 @@ public interface TasksApi {
                     }
             ),
             @ApiResponse(responseCode = "404", description = "Не найдено",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "401", description = "Пользователь не авторизован",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "403", description = "Запрещено",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(ref = "StandardResponseDto"))
@@ -72,6 +100,18 @@ public interface TasksApi {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(ref = "StandardResponseDto"))
                     }
+            ),
+            @ApiResponse(responseCode = "401", description = "Пользователь не авторизован",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "403", description = "Запрещено",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
             )
     })
     @DeleteMapping("/{task-id}")
@@ -84,9 +124,13 @@ public interface TasksApi {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = TaskDto.class))
                     }
-            )
+            ),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации",
+                    content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationErrorsDto.class))
+                    })
     })
     @PostMapping
     ResponseEntity<TaskDto> addTask(@Parameter(hidden = true) @AuthenticationPrincipal AuthenticatedUser user,
-                                    @RequestBody TaskDto task);
+                                    @RequestBody @Valid NewTaskDto task);
 }

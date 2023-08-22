@@ -32,7 +32,13 @@ public interface UsersApi {
                                     schema = @Schema(implementation = ProfileDto.class))
                     }
             ),
-            @ApiResponse(responseCode = "403", description = "Пользователь не аутентифицирован",
+            @ApiResponse(responseCode = "401", description = "Пользователь не авторизован",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "403", description = "Запрещено",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(ref = "StandardResponseDto"))
@@ -52,7 +58,13 @@ public interface UsersApi {
                                     schema = @Schema(implementation = TasksPage.class))
                     }
             ),
-            @ApiResponse(responseCode = "403", description = "Пользователь не аутентифицирован",
+            @ApiResponse(responseCode = "401", description = "Пользователь не авторизован",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(ref = "StandardResponseDto"))
+                    }
+            ),
+            @ApiResponse(responseCode = "403", description = "Запрещено",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(ref = "StandardResponseDto"))

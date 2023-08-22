@@ -1,18 +1,16 @@
 package de.ait.todo.services.impl;
 
+import de.ait.todo.dto.NewTaskDto;
 import de.ait.todo.dto.TaskDto;
 import de.ait.todo.dto.TasksPage;
-import de.ait.todo.exceptions.NotFoundException;
+import de.ait.todo.exceptions.RestException;
 import de.ait.todo.models.Task;
 import de.ait.todo.models.User;
 import de.ait.todo.repositories.TasksRepository;
 import de.ait.todo.repositories.UsersRepository;
-import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.TasksService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static de.ait.todo.dto.TaskDto.from;
@@ -41,7 +39,7 @@ public class TasksServiceImpl implements TasksService {
     @Override
     public TaskDto getById(Long taskId) {
         Task task = tasksRepository.findById(taskId).orElseThrow(
-                () -> new NotFoundException("Задача <" + taskId + "> не найдена"));
+                () -> new RestException(HttpStatus.NOT_FOUND, "Задача <" + taskId + "> не найдена"));
 
         return from(task);
     }
@@ -51,14 +49,14 @@ public class TasksServiceImpl implements TasksService {
         if (tasksRepository.existsById(taskId)) {
             tasksRepository.deleteById(taskId);
         } else {
-            throw new NotFoundException("Задача <" + taskId + "> не найдена");
+            throw new RestException(HttpStatus.NOT_FOUND, "Задача <" + taskId + "> не найдена");
         }
     }
 
     @Override
-    public TaskDto addTask(Long currentUserId, TaskDto task) {
+    public TaskDto addTask(Long currentUserId, NewTaskDto task) {
         User user = usersRepository.findById(currentUserId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Пользователь <" + currentUserId + "> не найден"));
 
         Task newTask = Task.builder()
                 .name(task.getName())
