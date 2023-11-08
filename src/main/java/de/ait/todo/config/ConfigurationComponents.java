@@ -23,7 +23,7 @@ public class ConfigurationComponents {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public OpenAPI openApi() {
         ResolvedSchema resolvedSchema = ModelConverters.getInstance()
